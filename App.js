@@ -4,6 +4,13 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomePage from "./src/Screens/homePage";
 import OperationPage from "./src/Screens/operationPage";
 import { FontAwesome } from 'react-native-vector-icons';
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
+
+
+
+console.log('redux is working!'); 
+
 
 const Tab = createBottomTabNavigator();
 
@@ -12,6 +19,8 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
+    <Provider store={store}>
+      
     <SafeAreaView className="flex-1">
       <NavigationContainer>
         <Tab.Navigator  screenOptions={({ route }) => ({
@@ -39,5 +48,6 @@ export default function App() {
         </Tab.Navigator>
       </NavigationContainer>
     </SafeAreaView>
+    </Provider>
   );
 }
