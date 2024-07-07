@@ -1,10 +1,8 @@
-import { Text, TouchableOpacity, View,StyleSheet} from "react-native";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 
-
-import Icon from 'react-native-vector-icons/FontAwesome';
-
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const OperationPage = ({ navigation }) => {
   return (
@@ -14,33 +12,38 @@ const OperationPage = ({ navigation }) => {
       start={{ x: 0.1, y: 0.1 }}
       end={{ x: 1, y: 1 }}
     >
- 
-   <View className="flex-1 px-4 py-5">
-
-        <View className="space-y-4 pt-5 pb-5">
-          <TouchableOpacity onPress={() => navigation.navigate('AddPage')}  style={style.box} className="flex-row justify-between items-center bg-white p-4 rounded">
+      <View className="flex-1 items-center justify-center space-y-10">
+        <View className="flex-row space-x-10">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("AddPage")}
+            style={style.box}
+            className="flex-row justify-between items-center space-x-3 bg-white p-10 rounded"
+          >
             <Text className="text-zinc-600  font-bold text-lg">EKLE</Text>
             <Icon name="plus" size={30} color="green" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('DeletePage')}  style={style.box} className="flex-row justify-between items-center bg-white p-4 rounded">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("DeletePage")}
+            style={style.box}
+            className="flex-row justify-between items-center space-x-3 bg-white p-10 rounded"
+          >
             <Text className="text-zinc-600 font-bold text-lg">SİL</Text>
             <Icon name="trash" size={30} color="red" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('UpdatePage')} style={style.box} className="flex-row justify-between items-center bg-white p-4 rounded">
+        </View>
+
+        <View className="flex-row ">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("UpdatePage")}
+            style={style.box}
+            className="flex-row justify-between items-center space-x-3 bg-white p-10 rounded"
+          >
             <Text className="text-zinc-600  font-bold text-lg">GÜNCELLE</Text>
             <Icon name="pencil" size={30} color="rgb(255, 192, 0)" />
           </TouchableOpacity>
         </View>
-
-
-
-
-   
-
-       
       </View>
-      
-       </LinearGradient>
+    </LinearGradient>
   );
 };
 const style = StyleSheet.create({
@@ -55,6 +58,5 @@ const style = StyleSheet.create({
     elevation: 16,
   },
 });
-
 
 export default OperationPage;

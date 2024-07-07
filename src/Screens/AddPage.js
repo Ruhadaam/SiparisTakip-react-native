@@ -27,7 +27,7 @@ const AddPage = () => {
   };
 
   return (
-    <View className=" flex-1 pt-16 pl-5 pr-12 space-y-10">
+    <View className=" flex-1 pt-16 px-5 space-y-10">
       <Text className="text-2xl text-center  border-b pb-6">Yeni Sipariş Oluştur</Text>
       <TextInput
         className="border p-2 rounded-md border-gray-400"
@@ -47,20 +47,11 @@ const AddPage = () => {
         onChangeText={(newDeposit) => setDeposit(newDeposit)}
         defaultValue={deposit}
       />
-      <View className="items-center">
+      <View>
         <TouchableOpacity
-          style={{
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 8,
-            },
-            shadowOpacity: 0.44,
-            shadowRadius: 10.32,
-            elevation: 16,
-          }}
+         
           onPress={showDatePicker}
-          className="flex flex-row h-10 w-2/3 items-center  mb-4 rounded-lg border-gray-400 border justify-center px-2 bg-white"
+          className="flex flex-row h-10  items-center  mb-4 rounded-lg border-gray-400 border justify-center px-2 "
         >
           <Icon name="calendar" size={24} color="black" />
           <Text className="" style={{ marginLeft: 10 }}>

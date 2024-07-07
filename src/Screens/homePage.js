@@ -14,7 +14,6 @@ import { useSelector } from "react-redux";
 const HomePage = () => {
   const data = useSelector((state) => state.data);
 
-
   return (
     <LinearGradient
       className="flex-1 "
@@ -22,6 +21,9 @@ const HomePage = () => {
       start={{ x: 0.1, y: 0.1 }}
       end={{ x: 1, y: 1 }}
     >
+      <View className="pt-10 px-7">
+      <Text className="text-2xl text-center  border-b pb-6">Siparişler</Text>
+      </View>
       <ScrollView>
         <View
           style={style.box}
@@ -29,8 +31,9 @@ const HomePage = () => {
         >
           <View className="flex-1">
             <View className="pl-24 justify-between flex-row pb-2 mb-5 border-b border-black/10">
+            
               <Text className="font-bold text-xl">{data.name}</Text>
-              <Icon name="trash" size={30} color="red" />
+              <Icon name="check" size={25} color="green" />
             </View>
             <View className="flex-row justify-between px-2">
               <View className="flex-col items-center">
@@ -38,23 +41,28 @@ const HomePage = () => {
                 <Text className=" text-sm">Kaldı</Text>
               </View>
               <View className="flex-col items-center">
-                <Text 
-                className={`font-bold text-3xl ${
-                  data.deliveryDate <= 3
-                    ? "text-red-500"
-                    : data.deliveryDate <= 5
-                    ? "text-orange-400"
-                    : "text-blue-500"
-                }`}
-                
-                >{data.deliveryDate}</Text>
-                <Text    className={`font-bold text-sm ${
-                  data.deliveryDate <= 3
-                    ? "text-red-500"
-                    : data.deliveryDate <= 5
-                    ? "text-orange-400"
-                    : "text-blue-500"
-                }`}>Gün Kaldı</Text>
+                <Text
+                  className={`font-bold text-3xl ${
+                    data.deliveryDate <= 3
+                      ? "text-red-500"
+                      : data.deliveryDate <= 5
+                      ? "text-orange-400"
+                      : "text-blue-500"
+                  }`}
+                >
+                  {data.deliveryDate}
+                </Text>
+                <Text
+                  className={`font-bold text-sm ${
+                    data.deliveryDate <= 3
+                      ? "text-red-500"
+                      : data.deliveryDate <= 5
+                      ? "text-orange-400"
+                      : "text-blue-500"
+                  }`}
+                >
+                  Gün Kaldı
+                </Text>
               </View>
             </View>
           </View>
