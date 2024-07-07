@@ -1,4 +1,4 @@
-import { Text, View, SafeAreaView, Button } from "react-native";
+import { Text, View, SafeAreaView, Button, StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -37,6 +37,11 @@ export default function App() {
   return (
     <Provider store={store}>
       <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar
+        animated={true}
+        backgroundColor="black"
+
+      />
         <NavigationContainer>
           <Tab.Navigator 
             screenOptions={({ route }) => ({
@@ -51,7 +56,8 @@ export default function App() {
               },
               tabBarActiveTintColor: 'blue',
               tabBarInactiveTintColor: 'gray',
-             
+              headerShown: false
+
 
             })}
           >
