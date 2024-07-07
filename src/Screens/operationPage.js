@@ -1,10 +1,12 @@
-import { Text, TouchableOpacity, View,StyleSheet,ScrollView } from "react-native";
+import { Text, TouchableOpacity, View,StyleSheet} from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const SettingsPage = () => {
+
+const OperationPage = ({ navigation }) => {
   return (
     <LinearGradient
       className="flex-1 "
@@ -12,22 +14,19 @@ const SettingsPage = () => {
       start={{ x: 0.1, y: 0.1 }}
       end={{ x: 1, y: 1 }}
     >
-      <ScrollView>
+ 
    <View className="flex-1 px-4 py-5">
 
-
-   
-
         <View className="space-y-4 pt-5 pb-5">
-          <TouchableOpacity  style={style.box} className="flex-row justify-between items-center bg-white p-4 rounded">
+          <TouchableOpacity onPress={() => navigation.navigate('AddPage')}  style={style.box} className="flex-row justify-between items-center bg-white p-4 rounded">
             <Text className="text-zinc-600  font-bold text-lg">EKLE</Text>
             <Icon name="plus" size={30} color="green" />
           </TouchableOpacity>
-          <TouchableOpacity  style={style.box} className="flex-row justify-between items-center bg-white p-4 rounded">
+          <TouchableOpacity onPress={() => navigation.navigate('DeletePage')}  style={style.box} className="flex-row justify-between items-center bg-white p-4 rounded">
             <Text className="text-zinc-600 font-bold text-lg">SİL</Text>
             <Icon name="trash" size={30} color="red" />
           </TouchableOpacity>
-          <TouchableOpacity  style={style.box} className="flex-row justify-between items-center bg-white p-4 rounded">
+          <TouchableOpacity onPress={() => navigation.navigate('UpdatePage')} style={style.box} className="flex-row justify-between items-center bg-white p-4 rounded">
             <Text className="text-zinc-600  font-bold text-lg">GÜNCELLE</Text>
             <Icon name="pencil" size={30} color="rgb(255, 192, 0)" />
           </TouchableOpacity>
@@ -40,7 +39,7 @@ const SettingsPage = () => {
 
        
       </View>
-      </ScrollView>
+      
        </LinearGradient>
   );
 };
@@ -58,4 +57,4 @@ const style = StyleSheet.create({
 });
 
 
-export default SettingsPage;
+export default OperationPage;
