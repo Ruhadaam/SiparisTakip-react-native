@@ -11,13 +11,22 @@ import { FontAwesome } from 'react-native-vector-icons';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import 'react-native-gesture-handler';
+import { useEffect } from "react";
+import {  addExample, createTable } from "./src/db/databaseService";
+
+
+
+
 
 console.log('redux is working!'); 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+
 function OperationStack() {
+  
+
   return (
     <Stack.Navigator
     screenOptions={{
@@ -33,7 +42,17 @@ function OperationStack() {
   );
 }
 
+
+
 export default function App() {
+
+useEffect(() => {
+createTable();
+
+
+}, [])
+
+
   return (
     <Provider store={store}>
       <SafeAreaView style={{ flex: 1 }}>

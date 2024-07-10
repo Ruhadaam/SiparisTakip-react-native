@@ -6,9 +6,9 @@ const initialState = {
   name: "Ramle Yatçı",
   price: 2500,
   deposit: 750,
-  remainder: 0, // Başlangıç değeri sıfır olarak ayarlıyoruz
+  remainder: 0, 
   orderDate: new Date(),
-  deliveryDate: new Date("2024-07-8")
+  deliveryDate: new Date("2024-07-15")
 };
 initialState.remainder = calculateRemainder(initialState.price, initialState.deposit);
 
