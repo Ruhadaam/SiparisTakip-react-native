@@ -11,7 +11,7 @@ const AddPage = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [deposit, setDeposit] = useState("");
-  const [orderDate, setOrderDate] = useState(new Date().toISOString());
+  const [orderDate, setOrderDate] = useState(format (new Date().toISOString(),"yyyy-MM-dd"));
   const [deliveryDate, setDeliveryDate] = useState("");
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);

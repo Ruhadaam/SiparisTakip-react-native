@@ -90,8 +90,8 @@ const HomePage = () => {
                       {differenceInDays(
                         new Date(item.deliveryDate),
                         new Date()
-                      )}{" "}
-                      gün kaldı
+                      )+1}
+                      
                     </Text>
                     <Text
                       className={`font-bold text-sm ${
