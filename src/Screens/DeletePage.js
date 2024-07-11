@@ -18,24 +18,21 @@ import { format, differenceInDays } from "date-fns"; // date-fns kütüphanesini
 const DeletePage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const data = await getData(); 
+      setOrders(data); 
+      setLoading(false); 
+    } catch (error) {
+      console.error("Veri alınırken hata oluştu: ", error);
+      setLoading(false); 
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getData(); // Asenkron veri alma işlemi
-        setOrders(data); // Verileri state'e kaydetme
-        setLoading(false); // Yükleme durumunu güncelleme
-      } catch (error) {
-        console.error("Veri alınırken hata oluştu: ", error);
-        setLoading(false); // Hata durumunda da yükleme durumunu güncelleme
-      }
-    };
-  
     fetchData();
-  }, []);
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    fetchData().then(() => setRefreshing(false));
   }, []);
   
 
@@ -46,6 +43,11 @@ const DeletePage = () => {
     deleteOrder(id);
     getData();
   };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchData().then(() => setRefreshing(false));
+  }, []);
 
   if (loading) {
     return (

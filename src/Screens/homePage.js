@@ -22,12 +22,12 @@ const HomePage = () => {
 
   const fetchData = async () => {
     try {
-      const data = await getData(); // Asenkron veri alma işlemi
-      setOrders(data); // Verileri state'e kaydetme
-      setLoading(false); // Yükleme durumunu güncelleme
+      const data = await getData(); 
+      setOrders(data); 
+      setLoading(false); 
     } catch (error) {
       console.error("Veri alınırken hata oluştu: ", error);
-      setLoading(false); // Hata durumunda da yükleme durumunu güncelleme
+      setLoading(false); 
     }
   };
 
