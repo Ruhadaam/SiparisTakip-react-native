@@ -7,32 +7,26 @@ import OperationPage from "./src/Screens/operationPage";
 import UpdatePage from "./src/Screens/UpdatePage";
 import AddPage from "./src/Screens/AddPage";
 import DeletePage from "./src/Screens/DeletePage";
-import { FontAwesome } from 'react-native-vector-icons';
-import { Provider } from 'react-redux';
-import store from './src/redux/store';
-import 'react-native-gesture-handler';
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { Provider } from "react-redux";
+import store from "./src/redux/store";
+import "react-native-gesture-handler";
 import { useEffect } from "react";
-import {  addExample, createTable } from "./src/db/databaseService";
+import { addExample, createTable } from "./src/db/databaseService";
+import StatsPage from "./src/Screens/statsPage";
 
-
-
-
-console.log('redux is working!'); 
+console.log("redux is working!");
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-
 function OperationStack() {
-  
-
   return (
     <Stack.Navigator
-    screenOptions={{
-      headerShown: false
-    }}
-  >
-  
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <Stack.Screen name="OperationPage" component={OperationPage} />
       <Stack.Screen name="UpdatePage" component={UpdatePage} />
       <Stack.Screen name="AddPage" component={AddPage} />
@@ -41,53 +35,42 @@ function OperationStack() {
   );
 }
 
-
-
 export default function App() {
-
-useEffect(() => {
-createTable();
-
-
-}, [])
-
+  useEffect(() => {
+    createTable();
+  }, []);
 
   return (
     <Provider store={store}>
       <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar
-        animated={true}
-        backgroundColor="black"
-
-      />
+        <StatusBar animated={true} backgroundColor="black" />
         <NavigationContainer>
-          <Tab.Navigator 
+          <Tab.Navigator
             screenOptions={({ route }) => ({
               tabBarIcon: ({ focused, color, size }) => {
                 let iconName;
-                if (route.name === 'Siparişler') {
-                  iconName = focused ? 'home' : 'home';
-                } else if (route.name === 'İşlemler') {
-                  iconName = focused ? 'cogs' : 'cogs';
+                if (route.name === "Siparişler") {
+                  iconName = focused ? "home" : "home";
+                } else if (route.name === "İşlemler") {
+                  iconName = focused ? "cogs" : "cogs";
+                } else if (route.name === "İstatistik") {
+                  iconName = focused ? "chart-bar" : "chart-bar"; // FontAwesome5 ikonu
                 }
-                return <FontAwesome name={iconName} size={size} color={color} />;
+                return (
+                  <FontAwesome5 name={iconName} size={size} color={color} />
+                );
               },
-              tabBarActiveTintColor: 'blue',
-              tabBarInactiveTintColor: 'gray',
-              headerShown: false
-
-
+              tabBarActiveTintColor: "blue",
+              tabBarInactiveTintColor: "gray",
+              headerShown: false,
             })}
           >
             <Tab.Screen name="Siparişler" component={HomePage} />
             <Tab.Screen name="İşlemler" component={OperationStack} />
-            
+            <Tab.Screen name="İstatistik" component={StatsPage} />
           </Tab.Navigator>
-        
         </NavigationContainer>
       </SafeAreaView>
-
     </Provider>
-    
   );
 }
