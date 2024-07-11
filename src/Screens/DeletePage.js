@@ -1,5 +1,5 @@
 // src/Screens/homePage.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useCallback } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
+  RefreshControl
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
@@ -29,15 +30,21 @@ const DeletePage = () => {
         setLoading(false); // Hata durumunda da yükleme durumunu güncelleme
       }
     };
-
+  
     fetchData();
   }, []);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchData().then(() => setRefreshing(false));
+  }, []);
+  
 
   let id;
 
   const deleteData = (id) => {
     console.log(id);
     deleteOrder(id);
+    getData();
   };
 
   if (loading) {
@@ -61,7 +68,9 @@ const DeletePage = () => {
             Siparişler
           </Text>
         </View>
-        <ScrollView>
+        <ScrollView refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
           {orders.map((item) => (
             <View
               style={style.box}

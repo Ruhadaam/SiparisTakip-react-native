@@ -63,7 +63,7 @@ const AddPage = () => {
       <Text className="text-2xl text-center  border-b pb-6">
         Yeni Sipariş Oluştur
       </Text>
-      <TextInput
+      <TextInput 
         className="border p-2 rounded-md border-gray-400"
         placeholder="Adı Soyadı"
         value={name}

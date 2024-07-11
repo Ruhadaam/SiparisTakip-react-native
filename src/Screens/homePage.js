@@ -1,11 +1,12 @@
 // src/Screens/homePage.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,20 +18,26 @@ import { format, differenceInDays } from "date-fns"; // date-fns kütüphanesini
 const HomePage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const data = await getData(); // Asenkron veri alma işlemi
+      setOrders(data); // Verileri state'e kaydetme
+      setLoading(false); // Yükleme durumunu güncelleme
+    } catch (error) {
+      console.error("Veri alınırken hata oluştu: ", error);
+      setLoading(false); // Hata durumunda da yükleme durumunu güncelleme
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getData(); // Asenkron veri alma işlemi
-        setOrders(data); // Verileri state'e kaydetme
-        setLoading(false); // Yükleme durumunu güncelleme
-      } catch (error) {
-        console.error("Veri alınırken hata oluştu: ", error);
-        setLoading(false); // Hata durumunda da yükleme durumunu güncelleme
-      }
-    };
-
     fetchData();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchData().then(() => setRefreshing(false));
   }, []);
 
   if (loading) {
@@ -54,7 +61,9 @@ const HomePage = () => {
             Siparişler
           </Text>
         </View>
-        <ScrollView>
+        <ScrollView refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
           {orders.map((item, index) => (
             <View
               style={style.box}
