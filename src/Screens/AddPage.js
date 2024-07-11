@@ -2,16 +2,19 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Button } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { format } from "date-fns"; // date-fns kütüphanesini ekleyin
-
+import { format } from "date-fns";
+import Toast from "react-native-toast-message";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../db/databaseService";
+import { toastConfig } from "../../toastConfig";
 
 const AddPage = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [deposit, setDeposit] = useState("");
-  const [orderDate, setOrderDate] = useState(format (new Date().toISOString(),"yyyy-MM-dd"));
+  const [orderDate, setOrderDate] = useState(
+    format(new Date().toISOString(), "yyyy-MM-dd")
+  );
   const [deliveryDate, setDeliveryDate] = useState("");
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -31,9 +34,6 @@ const AddPage = () => {
   };
 
   const handleAddOrder = async () => {
-
-
-
     const remainder = parseFloat(price) - parseFloat(deposit); // remainder hesaplama
 
     const orderData = {
@@ -47,15 +47,23 @@ const AddPage = () => {
 
     try {
       await addOrder(orderData);
-      // Başarılı bir şekilde ekledikten sonra state'i sıfırla veya diğer işlemleri yap
       setName("");
       setPrice("");
       setDeposit("");
-      setOrderDate(new Date().toISOString()); // Yeni bir tarih ataması
+      setOrderDate(new Date().toISOString());
       setDeliveryDate("");
+      Toast.show({
+        type: "success",
+        text1: "Başarılı",
+        text2: "Sipariş başarıyla eklendi!",
+      });
     } catch (error) {
       console.error("Sipariş eklenirken bir hata oluştu:", error);
-      // Hata durumunda kullanıcıya bilgi verilebilir veya gerekli işlemler yapılabilir
+      Toast.show({
+        type: 'error',
+        text1: 'Hata',
+        text2: 'Sipariş eklenirken bir hata oluştu.',
+      });
     }
   };
   return (
@@ -63,7 +71,7 @@ const AddPage = () => {
       <Text className="text-2xl text-center  border-b pb-6">
         Yeni Sipariş Oluştur
       </Text>
-      <TextInput 
+      <TextInput
         className="border p-2 rounded-md border-gray-400"
         placeholder="Adı Soyadı"
         value={name}
@@ -119,6 +127,8 @@ const AddPage = () => {
           <Text className="text-center text-xl">Ekle</Text>
         </TouchableOpacity>
       </View>
+      <Toast config={toastConfig} />
+
     </View>
   );
 };

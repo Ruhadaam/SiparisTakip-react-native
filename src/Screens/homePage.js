@@ -22,12 +22,12 @@ const HomePage = () => {
 
   const fetchData = async () => {
     try {
-      const data = await getData(); 
-      setOrders(data); 
-      setLoading(false); 
+      const data = await getData();
+      setOrders(data);
+      setLoading(false);
     } catch (error) {
       console.error("Veri alınırken hata oluştu: ", error);
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -61,69 +61,78 @@ const HomePage = () => {
             Siparişler
           </Text>
         </View>
-        <ScrollView refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
-          {orders.map((item, index) => (
-            <View
-              style={style.box}
-              className="flex-row px-8 items-center border-b border-gray-300 pb-5 pt-3 rounded-xl bg-white m-5"
-              key={item.id}
-            >
-              <View className="flex-1">
-                <View className="pl-24 justify-between flex-row pb-2 mb-5 border-b border-black/10">
-                  <Text className="font-bold text-xl">{item.name}</Text>
-                  <Icon name="check" size={25} color="green" />
-                </View>
-                <View className="flex-row justify-between px-2">
-                  <View className="flex-col items-center">
-                    <Text className="text-2xl">{item.remainder}TL</Text>
-                    <Text className="text-sm">Kaldı</Text>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {orders.length === 0 ? (
+            <Text className="text-center mt-10 text-2xl">Hiç sipariş yok 😥</Text>
+          ) : (
+            <>
+          
+              {orders.map((item) => (
+                <View
+                style={style.box}
+                className="flex-row px-8 items-center border-b border-gray-300 pb-5 pt-3 rounded-xl bg-white m-5"
+                key={item.id}
+              >
+                <View className="flex-1">
+                  <View className="pl-24 justify-between flex-row pb-2 mb-5 border-b border-black/10">
+                    <Text className="font-bold text-xl">{item.name}</Text>
+                    <Icon name="check" size={25} color="green" />
                   </View>
-                  <View className="flex-col items-center">
-                    <Text
-                      className={`font-bold text-2xl  ${
-                        differenceInDays(
+                  <View className="flex-row justify-between px-2">
+                    <View className="flex-col items-center">
+                      <Text className="text-2xl">{item.remainder}TL</Text>
+                      <Text className="text-sm">Kaldı</Text>
+                    </View>
+                    <View className="flex-col items-center">
+                      <Text
+                        className={`font-bold text-2xl  ${
+                          differenceInDays(
+                            new Date(item.deliveryDate),
+                            new Date()
+                          ) <= 3
+                            ? "text-red-500"
+                            : differenceInDays(
+                                new Date(item.deliveryDate),
+                                new Date()
+                              ) <= 5
+                            ? "text-orange-400"
+                            : "text-blue-500"
+                        }`}
+                      >
+                        {differenceInDays(
                           new Date(item.deliveryDate),
                           new Date()
-                        ) <= 3
-                          ? "text-red-500"
-                          : differenceInDays(
-                              new Date(item.deliveryDate),
-                              new Date()
-                            ) <= 5
-                          ? "text-orange-400"
-                          : "text-blue-500"
-                      }`}
-                    >
-                      {differenceInDays(
-                        new Date(item.deliveryDate),
-                        new Date()
-                      )+1}
-                      
-                    </Text>
-                    <Text
-                      className={`font-bold text-sm ${
-                        differenceInDays(
-                          new Date(item.deliveryDate),
-                          new Date()
-                        ) <= 3
-                          ? "text-red-500"
-                          : differenceInDays(
-                              new Date(item.deliveryDate),
-                              new Date()
-                            ) <= 5
-                          ? "text-orange-400"
-                          : "text-blue-500"
-                      }`}
-                    >
-                      Gün Kaldı
-                    </Text>
+                        )+1}
+                        
+                      </Text>
+                      <Text
+                        className={`font-bold text-sm ${
+                          differenceInDays(
+                            new Date(item.deliveryDate),
+                            new Date()
+                          ) <= 3
+                            ? "text-red-500"
+                            : differenceInDays(
+                                new Date(item.deliveryDate),
+                                new Date()
+                              ) <= 5
+                            ? "text-orange-400"
+                            : "text-blue-500"
+                        }`}
+                      >
+                        Gün Kaldı
+                      </Text>
+                    </View>
                   </View>
                 </View>
               </View>
-            </View>
-          ))}
+              ))}
+            </>
+          )}
         </ScrollView>
       </SQLiteProvider>
     </LinearGradient>

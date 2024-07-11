@@ -1,5 +1,5 @@
 // src/Screens/homePage.js
-import React, { useEffect, useState,useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,13 +7,15 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import { SQLiteProvider } from "expo-sqlite";
 import { deleteOrder, getData } from "../db/databaseService";
 import { format, differenceInDays } from "date-fns"; // date-fns kütüphanesini ekleyin
+import { toastConfig } from "../../toastConfig";
+import Toast from "react-native-toast-message";
 
 const DeletePage = () => {
   const [orders, setOrders] = useState([]);
@@ -22,26 +24,41 @@ const DeletePage = () => {
 
   const fetchData = async () => {
     try {
-      const data = await getData(); 
-      setOrders(data); 
-      setLoading(false); 
+      const data = await getData();
+      setOrders(data);
+      setLoading(false);
     } catch (error) {
       console.error("Veri alınırken hata oluştu: ", error);
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-  
 
   let id;
 
   const deleteData = (id) => {
-    console.log(id);
-    deleteOrder(id);
-    getData();
+
+    try {
+ 
+      deleteOrder(id);
+     fetchData();
+     Toast.show({
+      type: "success",
+      text1: "Başarılı",
+      text2: "Sipariş başarıyla silindi!",
+    });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Hata',
+        text2: 'Sipariş silinirken bir hata oluştu.',
+      });
+    }
+   
+   
   };
 
   const onRefresh = useCallback(() => {
@@ -70,9 +87,11 @@ const DeletePage = () => {
             Siparişler
           </Text>
         </View>
-        <ScrollView refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           {orders.map((item) => (
             <View
               style={style.box}
@@ -81,7 +100,9 @@ const DeletePage = () => {
             >
               <View className="flex-1">
                 <View className="pl-24 justify-between flex-row pb-2 mb-5 border-b border-black/10">
-                  <Text className="font-bold text-xl text-center">{item.name}</Text>
+                  <Text className="font-bold text-xl text-center">
+                    {item.name}
+                  </Text>
 
                   <TouchableOpacity
                     classname=""
@@ -140,6 +161,7 @@ const DeletePage = () => {
             </View>
           ))}
         </ScrollView>
+        <Toast config={toastConfig} />
       </SQLiteProvider>
     </LinearGradient>
   );

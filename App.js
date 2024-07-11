@@ -17,7 +17,6 @@ import {  addExample, createTable } from "./src/db/databaseService";
 
 
 
-
 console.log('redux is working!'); 
 
 const Tab = createBottomTabNavigator();
@@ -82,9 +81,13 @@ createTable();
           >
             <Tab.Screen name="Siparişler" component={HomePage} />
             <Tab.Screen name="İşlemler" component={OperationStack} />
+            
           </Tab.Navigator>
+        
         </NavigationContainer>
       </SafeAreaView>
+
     </Provider>
+    
   );
 }
