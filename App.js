@@ -12,7 +12,7 @@ import { Provider } from "react-redux";
 import store from "./src/redux/store";
 import "react-native-gesture-handler";
 import { useEffect } from "react";
-import { addExample, createTable } from "./src/db/databaseService";
+import {  createTable, resetTable } from "./src/db/databaseService";
 import StatsPage from "./src/Screens/statsPage";
 
 console.log("redux is working!");

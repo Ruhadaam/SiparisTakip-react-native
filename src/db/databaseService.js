@@ -2,15 +2,24 @@ import * as SQLite from "expo-sqlite";
 
 //TABLO OLUŞTURMA
 export const createTable = async () => {
-  const db = await SQLite.openDatabaseAsync("SiparisTakip");
-
   try {
-    await db.execAsync(
-      "CREATE TABLE IF NOT EXISTS Orders (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,price INTEGER,deposit INTEGER,remainder INTEGER,orderDate TEXT,deliveryDate TEXT)"
-    );
-    console.log("Tablo başarıyla oluşturuldu.");
+    const db = await SQLite.openDatabaseAsync("SiparisTakip");
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS Orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        price INTEGER,
+        deposit INTEGER,
+        remainder INTEGER,
+        orderDate DATE,
+        deliveryDate DATE,
+        isCompleted INTEGER DEFAULT 0
+      )
+    `); // Use template literals for cleaner string construction
+    console.log("Tablo başarıyla oluşturuldu");
   } catch (error) {
-    console.error("Hata tablo oluşturulurken:", error);
+    console.error("Tablo oluşturulurken bir hatayla karşılaşıldı:", error.message || error);
+   
   }
 };
 
@@ -34,7 +43,7 @@ export const getData = async () => {
 
   try {
     const allRows = await db.getAllAsync(
-      "SELECT * FROM Orders ORDER BY deliveryDate ASC"
+      "SELECT * FROM Orders WHERE isCompleted = 0 ORDER BY deliveryDate ASC"
     );
 
     console.log("Veri alma işlemi başarılı.");
@@ -50,7 +59,10 @@ export const addOrder = async (data) => {
 
   const db = await SQLite.openDatabaseAsync("SiparisTakip");
   try {
-    const insertQuery = `INSERT INTO Orders (name, price, deposit, remainder, orderDate, deliveryDate) VALUES (?, ?, ?, ?, ?, ?)`;
+    const insertQuery = `
+    INSERT INTO Orders (name, price, deposit, remainder, orderDate, deliveryDate, isCompleted)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
     const insertParams = [
       name,
       price,
@@ -58,6 +70,7 @@ export const addOrder = async (data) => {
       remainder,
       orderDate,
       deliveryDate,
+      0
     ];
 
     await db.runAsync(insertQuery, insertParams);
@@ -75,3 +88,52 @@ export const deleteOrder = async (id) => {
     console.error(error); // Log the error for debugging
   }
 };
+//TABLOYU YENİLEME
+export const resetTable = async () => {
+  const db = await SQLite.openDatabaseAsync("SiparisTakip");
+
+  try {
+    await db.execAsync("DROP TABLE Orders");
+    console.log("Tablo başarıyla silindi.");
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS Orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        price INTEGER,
+        deposit INTEGER,
+        remainder INTEGER,
+        orderDate DATE,
+        deliveryDate DATE,
+        isCompleted INTEGER DEFAULT 0
+        `);
+
+    console.log("Tablo başarıyla oluşturuldu.");
+  } catch (error) {
+    console.error("Hata tablo oluşturulurken:", error);
+  }
+};
+
+
+// Sipariş Tamamlama
+export const completed = async (id) => { 
+  const db = await SQLite.openDatabaseAsync("SiparisTakip");
+
+  try {
+    await db.execAsync(`
+      UPDATE Orders
+      SET isCompleted = 1
+      WHERE id = ${id}
+    `);
+
+  } catch (error) {
+    console.error( error);
+  }
+};
+
+
+
+
+
+
+
+

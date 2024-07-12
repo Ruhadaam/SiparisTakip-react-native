@@ -16,16 +16,16 @@ const OperationPage = ({ navigation }) => {
         <View className="flex-row space-x-10">
           <TouchableOpacity
             onPress={() => navigation.navigate("AddPage")}
-            style={style.box}
-            className="flex-row justify-between items-center space-x-3 bg-white p-10 rounded"
+            
+            className="flex-row justify-between items-center space-x-3 bg-white/50 p-10 rounded"
           >
             <Text className="text-zinc-600  font-bold text-lg">EKLE</Text>
             <Icon name="plus" size={30} color="green" />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate("DeletePage")}
-            style={style.box}
-            className="flex-row justify-between items-center space-x-3 bg-white p-10 rounded"
+            
+            className="flex-row justify-between items-center space-x-3 bg-white/50 p-10 rounded"
           >
             <Text className="text-zinc-600 font-bold text-lg">SİL</Text>
             <Icon name="trash" size={30} color="red" />
@@ -35,8 +35,8 @@ const OperationPage = ({ navigation }) => {
         <View className="flex-row ">
           <TouchableOpacity
             onPress={() => navigation.navigate("UpdatePage")}
-            style={style.box}
-            className="flex-row justify-between items-center space-x-3 bg-white p-10 rounded"
+            
+            className="flex-row justify-between items-center space-x-3 bg-white/50 p-10 rounded"
           >
             <Text className="text-zinc-600  font-bold text-lg">GÜNCELLE</Text>
             <Icon name="pencil" size={30} color="rgb(255, 192, 0)" />
@@ -46,17 +46,6 @@ const OperationPage = ({ navigation }) => {
     </LinearGradient>
   );
 };
-const style = StyleSheet.create({
-  box: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.44,
-    shadowRadius: 10.32,
-    elevation: 16,
-  },
-});
+
 
 export default OperationPage;
