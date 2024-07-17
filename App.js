@@ -8,12 +8,12 @@ import UpdatePage from "./src/Screens/UpdatePage";
 import AddPage from "./src/Screens/AddPage";
 import DeletePage from "./src/Screens/DeletePage";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { Provider } from "react-redux";
-import store from "./src/redux/store";
+
 import "react-native-gesture-handler";
 import { useEffect } from "react";
 import {  createTable, resetTable } from "./src/db/databaseService";
 import StatsPage from "./src/Screens/statsPage";
+import EditPage from "./src/Screens/EditPage";
 
 console.log("redux is working!");
 
@@ -31,9 +31,11 @@ function OperationStack() {
       <Stack.Screen name="UpdatePage" component={UpdatePage} />
       <Stack.Screen name="AddPage" component={AddPage} />
       <Stack.Screen name="DeletePage" component={DeletePage} />
+      <Stack.Screen name="EditPage" component={EditPage} /> 
     </Stack.Navigator>
   );
 }
+
 
 export default function App() {
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function App() {
   }, []);
 
   return (
-    <Provider store={store}>
+   
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar animated={true} backgroundColor="black" />
         <NavigationContainer>
@@ -71,6 +73,6 @@ export default function App() {
           </Tab.Navigator>
         </NavigationContainer>
       </SafeAreaView>
-    </Provider>
+   
   );
 }
