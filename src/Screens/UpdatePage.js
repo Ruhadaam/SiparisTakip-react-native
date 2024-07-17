@@ -1,5 +1,4 @@
-// src/Screens/homePage.js
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,26 +6,27 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  Modal,
+  TextInput,
+  Button
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import { SQLiteProvider } from "expo-sqlite";
-import { completed, getData } from "../db/databaseService";
-import {  differenceInDays } from "date-fns"; 
+import { completed, getData, updateData } from "../db/databaseService";
+import { differenceInDays } from "date-fns";
 import { toastConfig } from "../../toastConfig";
 import Toast from "react-native-toast-message";
-import { useNavigation } from '@react-navigation/native';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 
 const UpdatePage = () => {
-  const navigation = useNavigation();
-
-  const handleNavigate = () => {
-    navigation.navigate('EditPage');
-  };
-  
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -39,16 +39,43 @@ const UpdatePage = () => {
     }
   };
 
-
   useEffect(() => {
     fetchData();
-
   }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchData().then(() => setRefreshing(false));
   }, []);
+
+  const handleEdit = (order) => {
+    setSelectedOrder(order);
+    setModalVisible(true);
+  };
+
+  const handleSave = async () => {
+    try {
+      await updateData(selectedOrder);
+      setModalVisible(false);
+      fetchData(); // Verileri yeniden yükle
+    } catch (error) {
+      console.error("Veri güncellenirken hata oluştu: ", error);
+    }
+  };
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date, setFieldValue) => {
+    const formattedDate = format(date, "yyyy-MM-dd");
+    setFieldValue("deliveryDate", formattedDate);
+    hideDatePicker();
+  };
 
   if (loading) {
     return (
@@ -60,14 +87,14 @@ const UpdatePage = () => {
 
   return (
     <LinearGradient
-      className="flex-1"
+      style={{ flex: 1 }}
       colors={["#EAD6EC", "#AAF2E8"]}
       start={{ x: 0.1, y: 0.1 }}
       end={{ x: 1, y: 1 }}
     >
       <SQLiteProvider databaseName="SiparisTakip.db">
-        <View className="pt-10 px-7">
-          <Text className="text-2xl text-center border-b border-gray-700 pb-6">
+        <View style={{ paddingTop: 40, paddingHorizontal: 28 }}>
+          <Text style={{ fontSize: 24, textAlign: "center", borderBottomWidth: 1, borderBottomColor: "#4B5563", paddingBottom: 24 }}>
             Siparişler
           </Text>
         </View>
@@ -77,67 +104,36 @@ const UpdatePage = () => {
           }
         >
           {orders.length === 0 ? (
-            <Text className="text-center mt-10 text-2xl">
+            <Text style={{ textAlign: "center", marginTop: 40, fontSize: 24 }}>
               Hiç sipariş yok 😥
             </Text>
           ) : (
             <>
               {orders.map((item) => (
                 <View
-                
-                  className="flex-row px-8 items-center border-b border-gray-300 pb-5 pt-3 rounded-xl bg-white/50 m-5"
+                  style={{ flexDirection: "row", paddingHorizontal: 32, alignItems: "center", borderBottomWidth: 1, borderBottomColor: "#D1D5DB", paddingBottom: 20, paddingTop: 12, borderRadius: 20, backgroundColor: "#FFFFFF80", margin: 20 }}
                   key={item.id}
                 >
-                  <View className="flex-1">
-                    <View className="pl-24 justify-between flex-row pb-2 mb-5 border-b border-black/10">
-                      <Text className="font-bold text-xl">{item.name}</Text>
-                      <TouchableOpacity
-                        classname=""
-                        onPress={handleNavigate}
-                      >
+                  <View style={{ flex: 1 }}>
+                    <View style={{ paddingLeft: 96, justifyContent: "space-between", flexDirection: "row", paddingBottom: 8, marginBottom: 20, borderBottomWidth: 1, borderBottomColor: "#0000001A" }}>
+                      <Text style={{ fontWeight: "bold", fontSize: 20 }}>{item.name}</Text>
+                      <TouchableOpacity onPress={() => handleEdit(item)}>
                         <Icon name="edit" size={25} color="green" />
                       </TouchableOpacity>
                     </View>
-                    <View className="flex-row justify-between px-2">
-                      <View className="flex-col items-center">
-                        <Text className="text-2xl">{item.remainder}TL</Text>
-                        <Text className="text-sm">Kaldı</Text>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 8 }}>
+                      <View style={{ alignItems: "center" }}>
+                        <Text style={{ fontSize: 24 }}>{item.remainder}TL</Text>
+                        <Text style={{ fontSize: 12 }}>Kaldı</Text>
                       </View>
-                      <View className="flex-col items-center">
+                      <View style={{ alignItems: "center" }}>
                         <Text
-                          className={`font-bold text-2xl  ${
-                            differenceInDays(
-                              new Date(item.deliveryDate),
-                              new Date()
-                            ) <= 1
-                              ? "text-red-500"
-                              : differenceInDays(
-                                  new Date(item.deliveryDate),
-                                  new Date()
-                                ) <= 5
-                              ? "text-orange-400"
-                              : "text-blue-500"
-                          }`}
+                          style={{ fontWeight: "bold", fontSize: 24, color: differenceInDays(new Date(item.deliveryDate), new Date()) <= 1 ? "#EF4444" : differenceInDays(new Date(item.deliveryDate), new Date()) <= 5 ? "#F97316" : "#3B82F6" }}
                         >
-                          {differenceInDays(
-                            new Date(item.deliveryDate),
-                            new Date()
-                          ) + 1}
+                          {differenceInDays(new Date(item.deliveryDate), new Date()) + 1}
                         </Text>
                         <Text
-                          className={`font-bold text-sm ${
-                            differenceInDays(
-                              new Date(item.deliveryDate),
-                              new Date()
-                            ) <= 1
-                              ? "text-red-500"
-                              : differenceInDays(
-                                  new Date(item.deliveryDate),
-                                  new Date()
-                                ) <= 5
-                              ? "text-orange-400"
-                              : "text-blue-500"
-                          }`}
+                          style={{ fontWeight: "bold", fontSize: 12, color: differenceInDays(new Date(item.deliveryDate), new Date()) <= 1 ? "#EF4444" : differenceInDays(new Date(item.deliveryDate), new Date()) <= 5 ? "#F97316" : "#3B82F6" }}
                         >
                           Gün Kaldı
                         </Text>
@@ -149,11 +145,64 @@ const UpdatePage = () => {
             </>
           )}
         </ScrollView>
-        <Toast config={toastConfig}/>
+        <Toast config={toastConfig} />
       </SQLiteProvider>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/60" >
+          <View className="p-10 items-center rounded-xl bg-white w-80" >
+
+            <Text className="mb-5 text-xl" >Sipariş Düzenle</Text>
+
+            <View className="space-y-5 w-full">
+              <TextInput className="border p-2 rounded-md border-gray-400 w-full"
+                placeholder="İsim"
+                value={selectedOrder?.name}
+                onChangeText={(text) => setSelectedOrder({ ...selectedOrder, name: text })}
+              />
+              <TextInput
+                className="border p-2 rounded-md border-gray-400 w-full" placeholder="Tutar"
+                value={selectedOrder?.price?.toString()}
+                onChangeText={(text) => setSelectedOrder({ ...selectedOrder, price: text })}
+              />
+              <TextInput
+                className="border p-2 rounded-md border-gray-400 w-full" placeholder="Tutar"
+                value={selectedOrder?.remainder?.toString()}
+                onChangeText={(text) => setSelectedOrder({ ...selectedOrder, remainder: text })}
+              />
+
+            </View>
+
+            <TouchableOpacity
+              onPress={showDatePicker}
+              className="flex flex-row h-10 items-center w-full  my-5 rounded-lg border-gray-400 border justify-center px-2"
+            >
+              <Icon name="calendar" size={24} color="black" />
+              <Text className="ml-3" >
+                {selectedOrder?.deliveryDate ? selectedOrder.deliveryDate : "Teslim Tarihi Seç"}
+              </Text>
+
+
+            </TouchableOpacity>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="date"
+              onConfirm={(date) => handleConfirm(date, setFieldValue)}
+              onCancel={hideDatePicker}
+            />
+            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+              <Button title="İptal" onPress={() => setModalVisible(false)} />
+              <Button title="Kaydet" onPress={handleSave} />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </LinearGradient>
   );
 };
-
-
 export default UpdatePage;

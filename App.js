@@ -13,7 +13,7 @@ import "react-native-gesture-handler";
 import { useEffect } from "react";
 import {  createTable, resetTable } from "./src/db/databaseService";
 import StatsPage from "./src/Screens/statsPage";
-import EditPage from "./src/Screens/EditPage";
+
 
 console.log("redux is working!");
 
@@ -31,7 +31,7 @@ function OperationStack() {
       <Stack.Screen name="UpdatePage" component={UpdatePage} />
       <Stack.Screen name="AddPage" component={AddPage} />
       <Stack.Screen name="DeletePage" component={DeletePage} />
-      <Stack.Screen name="EditPage" component={EditPage} /> 
+     
     </Stack.Navigator>
   );
 }
