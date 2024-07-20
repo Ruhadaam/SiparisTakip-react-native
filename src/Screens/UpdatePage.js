@@ -121,37 +121,58 @@ const UpdatePage = () => {
           }
         >
           {orders.length === 0 ? (
-            <Text style={{ textAlign: "center", marginTop: 40, fontSize: 24 }}>
+            <Text className="text-center mt-10 text-2xl">
               Hiç sipariş yok 😥
             </Text>
           ) : (
             <>
               {orders.map((item) => (
-                <View
-                  style={{ flexDirection: "row", paddingHorizontal: 32, alignItems: "center", borderBottomWidth: 1, borderBottomColor: "#D1D5DB", paddingBottom: 20, paddingTop: 12, borderRadius: 20, backgroundColor: "#FFFFFF80", margin: 20 }}
+                <View className="flex-row px-8 items-center  pb-5 pt-3 rounded-xl bg-white/50 m-5"
                   key={item.id}
                 >
-                  <View style={{ flex: 1 }}>
-                    <View style={{ paddingLeft: 96, justifyContent: "space-between", flexDirection: "row", paddingBottom: 8, marginBottom: 20, borderBottomWidth: 1, borderBottomColor: "#0000001A" }}>
-                      <Text style={{ fontWeight: "bold", fontSize: 20 }}>{item.name}</Text>
+                  <View className="flex-1">
+                    <View className="pl-24 justify-between flex-row pb-2 mb-5 border-b border-black/10">
+                      <Text className="font-bold text-xl">{item.name}</Text>
                       <TouchableOpacity onPress={() => handleEdit(item)}>
                         <Icon name="edit" size={28} color="green" />
                       </TouchableOpacity>
                     </View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 8 }}>
-                      <View style={{ alignItems: "center" }}>
-                        <Text style={{ fontSize: 24 }}>{item.remainder}TL</Text>
-                        <Text style={{ fontSize: 12 }}>Kaldı</Text>
+                    <View className="flex-row justify-between px-2">
+                      <View sclassName="flex-col items-center">
+                        <Text className="text-2xl">{item.remainder}TL</Text>
+                        <Text className="text-sm">Kaldı</Text>
                       </View>
-                      <View style={{ alignItems: "center" }}>
+                      <View className="flex-col items-center">
                         <Text
-                          style={{ fontWeight: "bold", fontSize: 24, color: differenceInDays(new Date(item.deliveryDate), new Date()) <= 1 ? "#EF4444" : differenceInDays(new Date(item.deliveryDate), new Date()) <= 5 ? "#F97316" : "#3B82F6" }}
-                        >
+                          className={`font-bold text-2xl  ${
+                            differenceInDays(
+                              new Date(item.deliveryDate),
+                              new Date()
+                            ) <= 1
+                              ? "text-red-500"
+                              : differenceInDays(
+                                  new Date(item.deliveryDate),
+                                  new Date()
+                                ) <= 5
+                              ? "text-orange-400"
+                              : "text-blue-500"
+                          }`}>
                           {differenceInDays(new Date(item.deliveryDate), new Date()) + 1}
                         </Text>
                         <Text
-                          style={{ fontWeight: "bold", fontSize: 12, color: differenceInDays(new Date(item.deliveryDate), new Date()) <= 1 ? "#EF4444" : differenceInDays(new Date(item.deliveryDate), new Date()) <= 5 ? "#F97316" : "#3B82F6" }}
-                        >
+                          className={`font-bold text-sm ${
+                            differenceInDays(
+                              new Date(item.deliveryDate),
+                              new Date()
+                            ) <= 1
+                              ? "text-red-500"
+                              : differenceInDays(
+                                  new Date(item.deliveryDate),
+                                  new Date()
+                                ) <= 5
+                              ? "text-orange-400"
+                              : "text-blue-500"
+                          }`}>
                           Gün Kaldı
                         </Text>
                       </View>

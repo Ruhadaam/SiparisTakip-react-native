@@ -94,9 +94,9 @@ const DeletePage = () => {
         >
           {orders.map((item) => (
             <View
-              style={style.box}
-              className="flex-row px-8 items-center border-b border-gray-300 pb-5 pt-3 rounded-xl bg-white m-5"
-              key={item.id}
+             
+            className="flex-row px-8 items-center  pb-5 pt-3 rounded-xl bg-white/50 m-5"
+            key={item.id}
             >
               <View className="flex-1">
                 <View className="pl-24 justify-between flex-row pb-2 mb-5 border-b border-black/10">
@@ -108,7 +108,7 @@ const DeletePage = () => {
                     classname=""
                     onPress={() => deleteData(item.id)}
                   >
-                    <Icon name="trash" size={25} color="red" />
+                    <Icon name="trash" size={28} color="red" />
                   </TouchableOpacity>
                 </View>
                 <View className="flex-row justify-between px-2">
@@ -122,7 +122,7 @@ const DeletePage = () => {
                         differenceInDays(
                           new Date(item.deliveryDate),
                           new Date()
-                        ) <= 3
+                        ) <= 1
                           ? "text-red-500"
                           : differenceInDays(
                               new Date(item.deliveryDate),
@@ -139,19 +139,19 @@ const DeletePage = () => {
                     </Text>
 
                     <Text
-                      className={`font-bold text-sm ${
-                        differenceInDays(
+                  className={`font-bold text-sm ${
+                    differenceInDays(
+                      new Date(item.deliveryDate),
+                      new Date()
+                    ) <= 1
+                      ? "text-red-500"
+                      : differenceInDays(
                           new Date(item.deliveryDate),
                           new Date()
-                        ) <= 3
-                          ? "text-red-500"
-                          : differenceInDays(
-                              new Date(item.deliveryDate),
-                              new Date()
-                            ) <= 5
-                          ? "text-orange-400"
-                          : "text-blue-500"
-                      }`}
+                        ) <= 5
+                      ? "text-orange-400"
+                      : "text-blue-500"
+                  }`}
                     >
                       Gün Kaldı
                     </Text>
@@ -167,17 +167,6 @@ const DeletePage = () => {
   );
 };
 
-const style = StyleSheet.create({
-  box: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.44,
-    shadowRadius: 10.32,
-    elevation: 16,
-  },
-});
+
 
 export default DeletePage;

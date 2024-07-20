@@ -96,7 +96,7 @@ const HomePage = () => {
               {orders.map((item) => (
                 <View
                 
-                  className="flex-row px-8 items-center border-b border-gray-300 pb-5 pt-3 rounded-xl bg-white/50 m-5"
+                  className="flex-row px-8 items-center  pb-5 pt-3 rounded-xl bg-white/50 m-5"
                   key={item.id}
                 >
                   <View className="flex-1">
@@ -106,7 +106,7 @@ const HomePage = () => {
                         classname=""
                         onPress={() => completeOrder(item.id)}
                       >
-                        <Icon name="check" size={25} color="green" />
+                        <Icon name="check" size={28} color="green" />
                       </TouchableOpacity>
                     </View>
                     <View className="flex-row justify-between px-2">
