@@ -57,19 +57,4 @@ export const getAll = async () => {
     }
   };
 
-//VERİ ÇEKME
-export const getById = async (id) => {
-  const db = await SQLite.openDatabaseAsync("SiparisTakip");
-
-  try {
-    const IdRow = await db.getFirstAsync(
-      "SELECT * FROM Orders WHERE id = ? ORDER BY deliveryDate ASC",
-      id
-    );
-
-    return IdRow;
-  } catch (error) {
-    console.error("Hata veri alınırken:", error);
-  }
-};
 

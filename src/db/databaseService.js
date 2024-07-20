@@ -19,7 +19,7 @@ export const createTable = async () => {
     console.log("Tablo başarıyla oluşturuldu");
   } catch (error) {
     console.error("Tablo oluşturulurken bir hatayla karşılaşıldı:", error.message || error);
-   
+
   }
 };
 
@@ -75,7 +75,7 @@ export const addOrder = async (data) => {
 
     await db.runAsync(insertQuery, insertParams);
     console.log("Sipariş Başarıyla kaydedildi.");
-  } catch (error) {}
+  } catch (error) { }
 };
 
 //VERİ SİLME
@@ -115,7 +115,7 @@ export const resetTable = async () => {
 
 
 // Sipariş Tamamlama
-export const completed = async (id) => { 
+export const completed = async (id) => {
   const db = await SQLite.openDatabaseAsync("SiparisTakip");
 
   try {
@@ -126,9 +126,30 @@ export const completed = async (id) => {
     `);
 
   } catch (error) {
-    console.error( error);
+    console.error(error);
   }
 };
+
+
+export const updateData = async (order) => {
+  const db = await SQLite.openDatabaseAsync("SiparisTakip");
+
+  try {
+
+
+  
+    await db.runAsync(
+      `UPDATE Orders SET name = ?, price = ?, deposit = ?, remainder = ?, deliveryDate = ? WHERE id = ?`,
+      [order.name, order.price, order.deposit, order.remainder, order.deliveryDate, order.id]
+    );
+    console.log("Sipariş güncelleme başarılı");
+  } catch (error) {
+    console.error("Sipariş güncelleme hatası:", error);
+    console.error("SQL sorgusu:", `UPDATE Orders SET name = ?, price = ?, deposit = ?, remainder = ?, deliveryDate = ? WHERE id = ?`, [order.name, order.price, order.deposit, order.remainder, order.deliveryDate, order.id]); // Log SQL statement for debugging
+    throw new Error("Sipariş güncellenemedi"); // Rethrow for further handling
+  }
+};
+
 
 
 

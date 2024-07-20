@@ -13,12 +13,12 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import { SQLiteProvider } from "expo-sqlite";
-import { completed, getData, updateData } from "../db/databaseService";
+import { getData, updateData } from "../db/databaseService";
 import { differenceInDays } from "date-fns";
 import { toastConfig } from "../../toastConfig";
 import Toast from "react-native-toast-message";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-
+import { format } from "date-fns"; // Importing format function from date-fns
 
 const UpdatePage = () => {
   const [orders, setOrders] = useState([]);
@@ -55,11 +55,25 @@ const UpdatePage = () => {
 
   const handleSave = async () => {
     try {
-      await updateData(selectedOrder);
+      const updatedOrder = {
+        ...selectedOrder,
+        remainder: parseFloat(selectedOrder.price) - parseFloat(selectedOrder.deposit)
+      };
+
+      await updateData(updatedOrder);
       setModalVisible(false);
-      fetchData(); // Verileri yeniden yükle
+      fetchData();
+      Toast.show({
+        type: "success",
+        text1: "Başarılı",
+        text2: "Sipariş güncellendi",
+      });
     } catch (error) {
-      console.error("Veri güncellenirken hata oluştu: ", error);
+      Toast.show({
+        type: "error",
+        text1: "Hata",
+        text2: "Sipariş güncellenirken bir hata oluştu.",
+      });
     }
   };
 
@@ -71,9 +85,12 @@ const UpdatePage = () => {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = (date, setFieldValue) => {
+  const handleConfirm = (date) => {
     const formattedDate = format(date, "yyyy-MM-dd");
-    setFieldValue("deliveryDate", formattedDate);
+    setSelectedOrder((prevOrder) => ({
+      ...prevOrder,
+      deliveryDate: formattedDate
+    }));
     hideDatePicker();
   };
 
@@ -118,7 +135,7 @@ const UpdatePage = () => {
                     <View style={{ paddingLeft: 96, justifyContent: "space-between", flexDirection: "row", paddingBottom: 8, marginBottom: 20, borderBottomWidth: 1, borderBottomColor: "#0000001A" }}>
                       <Text style={{ fontWeight: "bold", fontSize: 20 }}>{item.name}</Text>
                       <TouchableOpacity onPress={() => handleEdit(item)}>
-                        <Icon name="edit" size={25} color="green" />
+                        <Icon name="edit" size={28} color="green" />
                       </TouchableOpacity>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 8 }}>
@@ -154,50 +171,51 @@ const UpdatePage = () => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black/60" >
-          <View className="p-10 items-center rounded-xl bg-white w-80" >
-
-            <Text className="mb-5 text-xl" >Sipariş Düzenle</Text>
-
+        <View className="flex-1 justify-center items-center bg-black/60">
+          <View className="p-10 items-center rounded-xl bg-white w-80">
+            <Text className="mb-5 text-xl">Sipariş Düzenle</Text>
             <View className="space-y-5 w-full">
-              <TextInput className="border p-2 rounded-md border-gray-400 w-full"
+              <TextInput
+                className="border p-2 rounded-md border-gray-400 w-full"
                 placeholder="İsim"
                 value={selectedOrder?.name}
                 onChangeText={(text) => setSelectedOrder({ ...selectedOrder, name: text })}
               />
               <TextInput
-                className="border p-2 rounded-md border-gray-400 w-full" placeholder="Tutar"
+                className="border p-2 rounded-md border-gray-400 w-full"
+                placeholder="Fiyat"
                 value={selectedOrder?.price?.toString()}
                 onChangeText={(text) => setSelectedOrder({ ...selectedOrder, price: text })}
               />
               <TextInput
-                className="border p-2 rounded-md border-gray-400 w-full" placeholder="Tutar"
-                value={selectedOrder?.remainder?.toString()}
-                onChangeText={(text) => setSelectedOrder({ ...selectedOrder, remainder: text })}
+                className="border p-2 rounded-md border-gray-400 w-full"
+                placeholder="Kapora"
+                value={selectedOrder?.deposit?.toString()}
+                onChangeText={(text) => setSelectedOrder({ ...selectedOrder, deposit: text })}
               />
-
             </View>
-
             <TouchableOpacity
               onPress={showDatePicker}
-              className="flex flex-row h-10 items-center w-full  my-5 rounded-lg border-gray-400 border justify-center px-2"
+              className="flex flex-row h-10 items-center w-full my-5 rounded-lg border-gray-400 border justify-center px-2"
             >
               <Icon name="calendar" size={24} color="black" />
-              <Text className="ml-3" >
+              <Text className="ml-3">
                 {selectedOrder?.deliveryDate ? selectedOrder.deliveryDate : "Teslim Tarihi Seç"}
               </Text>
-
-
             </TouchableOpacity>
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
               mode="date"
-              onConfirm={(date) => handleConfirm(date, setFieldValue)}
+              onConfirm={handleConfirm}
               onCancel={hideDatePicker}
             />
-            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
-              <Button title="İptal" onPress={() => setModalVisible(false)} />
-              <Button title="Kaydet" onPress={handleSave} />
+            <View className="flex-row justify-between w-full mt-3">
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Text className="p-3 bg-red-600 text-base rounded">İptal</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleSave}>
+                <Text className="p-3 bg-yellow-500 text-base rounded">Güncelle</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
