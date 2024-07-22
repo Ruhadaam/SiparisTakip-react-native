@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  Modal
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,6 +21,8 @@ const HomePage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -32,14 +35,14 @@ const HomePage = () => {
     }
   };
 
-  const completeOrder = async (id) => {
+  const completeOrder = async () => {
     try {
-      completed(id);
+      await completed(selectedOrderId);
       fetchData();
       Toast.show({
         type: "success",
         text1: "Başarılı",
-        text2: "Sipariş başarıyla tamamlandı",
+        text2: "Sipariş başarıyla tamamlandı!",
       });
     } catch (error) {
       console.log("Sipariş Tamamlanırken bir hatayla karşılaşıldı.");
@@ -48,6 +51,9 @@ const HomePage = () => {
         text1: 'Hata',
         text2: 'Sipariş eklenirken bir hata oluştu.',
       });
+    }
+    finally {
+      setModalVisible(false);
     }
   };
 
@@ -104,7 +110,7 @@ const HomePage = () => {
                       <Text className="font-bold text-xl">{item.name}</Text>
                       <TouchableOpacity
                         classname=""
-                        onPress={() => completeOrder(item.id)}
+                        onPress={() => { setSelectedOrderId(item.id); setModalVisible(true); }}
                       >
                         <Icon name="check" size={28} color="green" />
                       </TouchableOpacity>
@@ -162,6 +168,26 @@ const HomePage = () => {
         </ScrollView>
         <Toast config={toastConfig}/>
       </SQLiteProvider>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/60">
+          <View className="p-10 items-center rounded-xl bg-white w-80">
+            <Text className="text-2xl text-center my-10">Siparişi tamamlamak istediğine emin misin ?</Text>
+            <View className="flex-row justify-between w-full mt-3">
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Text className="p-4 bg-yellow-500 text-base rounded">İptal</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={completeOrder}>
+                <Text className="p-4 bg-green-600 text-base rounded">Tamamla</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </LinearGradient>
   );
 };

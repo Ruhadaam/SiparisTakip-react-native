@@ -104,27 +104,27 @@ const AddPage = () => {
             <TextInput
               className="border p-2 rounded-md border-gray-400"
               placeholder="Adı Soyadı"
-             
               onChangeText={handleChange("name")}
               onBlur={handleBlur("name")}
+              value={values.name}
             />
             {errors.name && touched.name && showSnackbar(errors.name)}
             <TextInput
               className="border p-2 rounded-md border-gray-400"
               placeholder="Fiyat"
-             
               onChangeText={handleChange("price")}
               onBlur={handleBlur("price")}
               keyboardType="numeric"
+              value={values.price}
             />
             {errors.price && touched.price && showSnackbar(errors.price)}
             <TextInput
               className="border p-2 rounded-md border-gray-400"
               placeholder="Kapora"
-              
               onChangeText={handleChange("deposit")}
               onBlur={handleBlur("deposit")}
               keyboardType="numeric"
+              value={values.deposit}
             />
             {errors.deposit && touched.deposit && showSnackbar(errors.deposit)}
             <View>
@@ -133,7 +133,7 @@ const AddPage = () => {
                 className="flex flex-row h-10 items-center mb-4 rounded-lg border-gray-400 border justify-center px-2"
               >
                 <Icon name="calendar" size={24} color="black" />
-                <Text className="" style={{ marginLeft: 10 }}>
+                <Text style={{ marginLeft: 10 }}>
                   {values.deliveryDate ? values.deliveryDate : "Teslim Tarihi Seç"}
                 </Text>
               </TouchableOpacity>
