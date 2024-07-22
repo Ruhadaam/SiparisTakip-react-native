@@ -110,8 +110,8 @@ const UpdatePage = () => {
       end={{ x: 1, y: 1 }}
     >
       <SQLiteProvider databaseName="SiparisTakip.db">
-        <View style={{ paddingTop: 40, paddingHorizontal: 28 }}>
-          <Text style={{ fontSize: 24, textAlign: "center", borderBottomWidth: 1, borderBottomColor: "#4B5563", paddingBottom: 24 }}>
+        <View className="pt-10 px-7">
+          <Text className="text-2xl text-center border-b border-gray-700 pb-6">
             Siparişler
           </Text>
         </View>

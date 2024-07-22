@@ -3,17 +3,17 @@ import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
   RefreshControl,
+  Modal,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import { SQLiteProvider } from "expo-sqlite";
 import { deleteOrder, getData } from "../db/databaseService";
-import { format, differenceInDays } from "date-fns"; // date-fns kütüphanesini ekleyin
+import { differenceInDays } from "date-fns";
 import { toastConfig } from "../../toastConfig";
 import Toast from "react-native-toast-message";
 
@@ -21,6 +21,8 @@ const DeletePage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -37,28 +39,24 @@ const DeletePage = () => {
     fetchData();
   }, []);
 
-  let id;
-
-  const deleteData = (id) => {
-
+  const deleteData = async () => {
     try {
- 
-      deleteOrder(id);
-     fetchData();
-     Toast.show({
-      type: "success",
-      text1: "Başarılı",
-      text2: "Sipariş başarıyla silindi!",
-    });
+      await deleteOrder(selectedOrderId);
+      fetchData();
+      Toast.show({
+        type: "success",
+        text1: "Başarılı",
+        text2: "Sipariş başarıyla silindi!",
+      });
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Hata',
         text2: 'Sipariş silinirken bir hata oluştu.',
       });
+    } finally {
+      setModalVisible(false);
     }
-   
-   
   };
 
   const onRefresh = useCallback(() => {
@@ -68,7 +66,7 @@ const DeletePage = () => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View className="flex-1 justify-center items-center">
         <ActivityIndicator size="large" color="blue" />
       </View>
     );
@@ -94,9 +92,8 @@ const DeletePage = () => {
         >
           {orders.map((item) => (
             <View
-             
-            className="flex-row px-8 items-center  pb-5 pt-3 rounded-xl bg-white/50 m-5"
-            key={item.id}
+              className="flex-row px-8 items-center pb-5 pt-3 rounded-xl bg-white/50 m-5"
+              key={item.id}
             >
               <View className="flex-1">
                 <View className="pl-24 justify-between flex-row pb-2 mb-5 border-b border-black/10">
@@ -105,8 +102,7 @@ const DeletePage = () => {
                   </Text>
 
                   <TouchableOpacity
-                    classname=""
-                    onPress={() => deleteData(item.id)}
+                    onPress={() => { setSelectedOrderId(item.id); setModalVisible(true); }}
                   >
                     <Icon name="trash" size={28} color="red" />
                   </TouchableOpacity>
@@ -118,40 +114,16 @@ const DeletePage = () => {
                   </View>
                   <View className="flex-col items-center">
                     <Text
-                      className={`font-bold text-2xl  ${
-                        differenceInDays(
-                          new Date(item.deliveryDate),
-                          new Date()
-                        ) <= 1
-                          ? "text-red-500"
-                          : differenceInDays(
-                              new Date(item.deliveryDate),
-                              new Date()
-                            ) <= 5
-                          ? "text-orange-400"
-                          : "text-blue-500"
+                      className={`font-bold text-2xl ${
+                        differenceInDays(new Date(item.deliveryDate), new Date()) <= 1 ? "text-red-500" : differenceInDays(new Date(item.deliveryDate), new Date()) <= 5 ? "text-orange-400" : "text-blue-500"
                       }`}
                     >
-                      {differenceInDays(
-                        new Date(item.deliveryDate),
-                        new Date()
-                      ) + 1}
+                      {differenceInDays(new Date(item.deliveryDate), new Date()) + 1}
                     </Text>
-
                     <Text
-                  className={`font-bold text-sm ${
-                    differenceInDays(
-                      new Date(item.deliveryDate),
-                      new Date()
-                    ) <= 1
-                      ? "text-red-500"
-                      : differenceInDays(
-                          new Date(item.deliveryDate),
-                          new Date()
-                        ) <= 5
-                      ? "text-orange-400"
-                      : "text-blue-500"
-                  }`}
+                      className={`font-bold text-sm ${
+                        differenceInDays(new Date(item.deliveryDate), new Date()) <= 1 ? "text-red-500" : differenceInDays(new Date(item.deliveryDate), new Date()) <= 5 ? "text-orange-400" : "text-blue-500"
+                      }`}
                     >
                       Gün Kaldı
                     </Text>
@@ -163,10 +135,29 @@ const DeletePage = () => {
         </ScrollView>
         <Toast config={toastConfig} />
       </SQLiteProvider>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/60">
+          <View className="p-10 items-center rounded-xl bg-white w-80">
+            <Text className="text-2xl text-center my-10">Silmek istediğine emin misin?</Text>
+            <View className="flex-row justify-between w-full mt-3">
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Text className="p-4 bg-yellow-500 text-base rounded">İptal</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={deleteData}>
+                <Text className="p-4 bg-red-600 text-base rounded">Sil</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </LinearGradient>
   );
 };
-
-
 
 export default DeletePage;
