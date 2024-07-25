@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "SiparisTakip",
+    "name": "Sipariş Takip",
     "slug": "SiparisTakip",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true
@@ -18,10 +18,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ruhadam.SiparisTakip"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0e197f4a-f8a9-4044-8360-7a9894ec4622"
+      }
     }
   }
 }
